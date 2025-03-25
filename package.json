@@ -1,11 +1,13 @@
 {
   "name": "vue-matomo",
-  "version": "4.1.0",
-  "description": "Link your Piwik/Matomo installation",
-  "author": "Dennis Ruhe <dennis@amazingsystems.nl>",
+  "version": "1.0.0",
+  "description": "Link your Piwik/Matomo installation.",
   "license": "MIT",
-  "main": "dist/vue-matomo.js",
-  "repository": "https://github.com/AmazingDreams/vue-matomo",
+  "readme": "./README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dankc/vue-matomo.git"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
@@ -14,6 +16,11 @@
     "lint:fix": "eslint --ext .js,.vue src --fix",
     "build": "node config/scripts/build.js",
     "prepublish": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/vue-matomo.js"
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.11.4",
@@ -44,11 +51,16 @@
     "last 2 versions",
     "not ie <= 8"
   ],
+  "main": "dist/vue-matomo.js",
   "files": [
     "/dist",
-    "/src",
     "LICENSE",
     "README.md",
     "package.json"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/dankc/vue-matomo/issues"
+  },
+  "homepage": "https://github.com/dankc/vue-matomo#readme",
+  "author": "Dennis Ruhe <dennis@amazingsystems.nl>"
 }
