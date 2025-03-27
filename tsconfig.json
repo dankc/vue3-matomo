@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "sourceMap": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": false,
+    "noEmit": true,
+    "declaration": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "baseUrl": ".",
+    "outDir": "./dist/",
+    "removeComments": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": ["./src/**/*.ts", "vite.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

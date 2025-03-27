@@ -1,7 +1,7 @@
 {
-  "name": "vue-matomo",
+  "name": "vue3-matomo",
   "version": "1.0.0",
-  "description": "Link your Piwik/Matomo installation.",
+  "description": "A Vue 3 plugin for Matomo Analytics.",
   "license": "MIT",
   "readme": "./README.md",
   "repository": {
@@ -12,55 +12,45 @@
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
-    "lint": "eslint --ext .js,.vue src",
-    "lint:fix": "eslint --ext .js,.vue src --fix",
-    "build": "node config/scripts/build.js",
-    "prepublish": "npm run build"
+    "format": "prettier --write src/",
+    "type-check": "tsc --noEmit",
+    "build": "npm run type-check && vite build"
   },
-  "exports": {
-    ".": {
-      "default": "./dist/vue-matomo.js"
-    }
-  },
-  "devDependencies": {
-    "@babel/core": "^7.11.4",
-    "@babel/preset-env": "^7.11.0",
-    "@vue/cli": "^4.5.4",
-    "babel-eslint": "^10.1.0",
-    "babel-loader": "^8.1.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "compression-webpack-plugin": "^5.0.1",
-    "eslint": "^7.7.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "eslint-plugin-vue": "^6.2.2",
-    "friendly-errors-webpack-plugin": "^1.6.1",
-    "ora": "^5.0.0",
-    "webpack": "^4.44.1",
-    "webpack-merge": "^5.1.2"
-  },
-  "engines": {
-    "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
-  "main": "dist/vue-matomo.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "files": [
     "/dist",
     "LICENSE",
     "README.md",
     "package.json"
   ],
+  "peerDependencies": {
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.13",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "prettier": "^3.5.3",
+    "rollup-plugin-dts": "^6.2.1",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.3",
+    "vite-plugin-dts": "^4.5.3",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "engines": {
+    "node": ">= 20.0.0",
+    "npm": ">= 11.0.0"
+  },
   "bugs": {
     "url": "https://github.com/dankc/vue-matomo/issues"
   },
   "homepage": "https://github.com/dankc/vue-matomo#readme",
-  "author": "Dennis Ruhe <dennis@amazingsystems.nl>"
+  "author": {
+    "name": "Dan Kiser",
+    "email": "dankc@pm.me"
+  }
 }

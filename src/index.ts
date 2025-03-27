@@ -1,7 +1,10 @@
-import { ref } from 'vue';
-import { getMatomo, getResolvedHref, loadScript } from './utils';
+import { ref, type App } from 'vue';
+import type { RouteLocationNormalized } from 'vue-router';
+import type { MatomoDefaults, MatomoOptions, MatomoInstance, SiteSearchFunction, SiteSearchReturn } from '@/types/index';
+import { getMatomo, getResolvedHref, loadScript, matomoEvents } from '@/utils';
 
-const defaultOptions = {
+const defaultOptions: MatomoDefaults = {
+  async: true,
   debug: false,
   disableCookies: false,
   requireCookieConsent: false,
@@ -10,7 +13,6 @@ const defaultOptions = {
   heartBeatTimerInterval: 15,
   requireConsent: false,
   trackInitialView: true,
-  trackSiteSearch: false,
   trackerFileName: 'matomo',
   trackerUrl: undefined,
   trackerScriptUrl: undefined,
@@ -18,14 +20,16 @@ const defaultOptions = {
   cookieDomain: undefined,
   domains: undefined,
   preInitActions: [],
+  trackSiteSearch: undefined,
   crossOrigin: undefined,
 };
+let Matomo: MatomoInstance | undefined;
 
-export const matomoKey = Symbol('Matomo');
-const MatomoRef = ref(null);
+const matomoKey = Symbol('Matomo');
+const MatomoRef = ref<MatomoInstance | undefined>(undefined);
 
-function trackUserInteraction(options, to, from) {
-  if (typeof options.trackSiteSearch === 'function') {
+function trackUserInteraction(options: MatomoOptions, to: RouteLocationNormalized, from?: RouteLocationNormalized) {
+  if (options.trackSiteSearch) {
     const siteSearch = options.trackSiteSearch(to);
     if (siteSearch) {
       trackMatomoSiteSearch(options, siteSearch);
@@ -35,23 +39,19 @@ function trackUserInteraction(options, to, from) {
   trackMatomoPageView(options, to, from);
 }
 
-function trackMatomoSiteSearch(options, { keyword, category, resultsCount }) {
-  const Matomo = getMatomo();
+function trackMatomoSiteSearch(options: MatomoOptions, { keyword, category, resultsCount }: SiteSearchReturn) {
   options.debug && console.debug('[vue-matomo] Site Search ' + keyword);
-  Matomo.trackSiteSearch(keyword, category, resultsCount);
+  Matomo?.trackSiteSearch(keyword, category, resultsCount);
 }
 
-function trackMatomoPageView(options, to, from) {
-  const Matomo = getMatomo();
-  let title;
-  let url;
-  let referrerUrl;
+function trackMatomoPageView(options: MatomoOptions, to: RouteLocationNormalized, from?: RouteLocationNormalized) {
+  let title: string | undefined;
+  let url: string | undefined;
+  let referrerUrl: string | undefined;
 
   if (options.router) {
     url = getResolvedHref(options.router, to.fullPath);
-    referrerUrl = from && from.fullPath
-      ? getResolvedHref(options.router, from.fullPath)
-      : undefined;
+    referrerUrl = from && from.fullPath ? getResolvedHref(options.router, from.fullPath) : undefined;
 
     if (to.meta.analyticsIgnore) {
       options.debug && console.debug('[vue-matomo] Ignoring ' + url);
@@ -59,52 +59,45 @@ function trackMatomoPageView(options, to, from) {
     }
 
     options.debug && console.debug('[vue-matomo] Tracking ' + url);
-    title = to.meta.title || url;
+    title = (to.meta.title as string | undefined) || url;
   }
 
   if (referrerUrl) {
-    Matomo.setReferrerUrl(window.location.origin + referrerUrl);
+    Matomo?.setReferrerUrl(window.location.origin + referrerUrl);
   }
   if (url) {
-    Matomo.setCustomUrl(window.location.origin + url);
+    Matomo?.setCustomUrl(window.location.origin + url);
   }
 
-  Matomo.trackPageView(title);
+  Matomo?.trackPageView(title);
 }
 
-function initMatomo(Vue, options) {
-  const Matomo = getMatomo();
-  const version = Number(Vue.version.split('.')[0]);
+function initMatomo(Vue: App, options: MatomoOptions) {
+  Matomo = getMatomo();
 
+  // For Composition API users using the Provide
   MatomoRef.value = Matomo;
-
-  if (version > 2) {
-    Vue.config.globalProperties.$piwik = Matomo;
-    Vue.config.globalProperties.$matomo = Matomo;
-  } else {
-    Vue.prototype.$piwik = Matomo;
-    Vue.prototype.$matomo = Matomo;
-  }
+  // For Options API users
+  Vue.config.globalProperties.$piwik = Matomo;
+  Vue.config.globalProperties.$matomo = Matomo;
 
   if (options.trackInitialView && options.router) {
-    const currentRoute = options.router.currentRoute.value
-      ? options.router.currentRoute.value
-      : options.router.currentRoute;
+    const currentRoute: RouteLocationNormalized = options.router.currentRoute.value;
     trackUserInteraction(options, currentRoute);
   }
 
   if (options.router) {
-    options.router.afterEach((to, from) => {
+    options.router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
       trackUserInteraction(options, to, from);
       if (options.enableLinkTracking) {
-        Matomo.enableLinkTracking();
+        Matomo?.enableLinkTracking();
       }
     });
   }
 }
 
-function piwikExists() {
-  return new Promise((resolve, reject) => {
+function piwikExists(): Promise<void> {
+  return new Promise((resolve) => {
     const checkInterval = 50;
     const timeout = 3000;
     const waitStart = Date.now();
@@ -123,10 +116,10 @@ function piwikExists() {
   });
 }
 
-export default function install(Vue, setupOptions = {}) {
-  const options = Object.assign({}, defaultOptions, setupOptions);
+function install(Vue: App, setupOptions: MatomoOptions) {
+  const options: MatomoOptions = Object.assign({}, defaultOptions, setupOptions);
 
-  const { host, siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
+  const { async, crossOrigin, host, siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
   const trackerScript = trackerScriptUrl || `${host}/${trackerFileName}.js`;
   const trackerEndpoint = trackerUrl || `${host}/${trackerFileName}.php`;
 
@@ -157,7 +150,7 @@ export default function install(Vue, setupOptions = {}) {
     window._paq.push(['requireCookieConsent']);
   }
 
-  if (options.enableHeartBeatTimer) {
+  if (options.enableHeartBeatTimer && options.heartBeatTimerInterval) {
     window._paq.push(['enableHeartBeatTimer', options.heartBeatTimerInterval]);
   }
 
@@ -169,18 +162,32 @@ export default function install(Vue, setupOptions = {}) {
     window._paq.push(['setDomains', options.domains]);
   }
 
-  options.preInitActions.forEach((action) => window._paq.push(action));
+  options.preInitActions?.forEach((action) => window._paq?.push(action));
 
-  loadScript(trackerScript, options.crossOrigin)
+  loadScript(Vue, trackerScript, { async, crossOrigin })
     .then(() => piwikExists())
-    .then(() => initMatomo(Vue, options))
+    .then(() => {
+      initMatomo(Vue, options);
+      matomoEvents.emit('matomo:loaded');
+    })
     .catch((error) => {
       if (error.target) {
         return console.error(
           `[vue-matomo] An error occurred trying to load ${error.target.src}. ` +
-          'If the file exists you may have an ad- or trackingblocker enabled.'
+            'If the file exists you may have an ad or tracking blocker enabled.'
         );
       }
       console.error(error);
     });
 }
+
+export function createVueMatomo(options: MatomoOptions) {
+  return {
+    install: (app: App) => install(app, options),
+  };
+}
+
+export { matomoKey };
+// Ensuring everything we want bundled is included
+export type { MatomoInstance, MatomoOptions, SiteSearchFunction } from '@/types/index';
+export { matomoEvents } from '@/utils';
