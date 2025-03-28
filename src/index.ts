@@ -1,6 +1,6 @@
-import { ref, type App } from 'vue';
+import { inject, ref, type App, type InjectionKey, type Ref } from 'vue';
 import type { RouteLocationNormalized } from 'vue-router';
-import type { MatomoDefaults, MatomoOptions, MatomoInstance, SiteSearchFunction, SiteSearchReturn } from '@/types/index';
+import type { MatomoDefaults, MatomoOptions, MatomoInstance, SiteSearchReturn } from '@/types/index';
 import { getMatomo, getResolvedHref, loadScript, matomoEvents } from '@/utils';
 
 const defaultOptions: MatomoDefaults = {
@@ -23,42 +23,51 @@ const defaultOptions: MatomoDefaults = {
   trackSiteSearch: undefined,
   crossOrigin: undefined,
 };
-let Matomo: MatomoInstance | undefined;
 
-const matomoKey = Symbol('Matomo');
-const MatomoRef = ref<MatomoInstance | undefined>(undefined);
-
-function trackUserInteraction(options: MatomoOptions, to: RouteLocationNormalized, from?: RouteLocationNormalized) {
+function trackUserInteraction(
+  Matomo: MatomoInstance | undefined,
+  options: MatomoOptions,
+  to: RouteLocationNormalized,
+  from?: RouteLocationNormalized
+) {
   if (options.trackSiteSearch) {
     const siteSearch = options.trackSiteSearch(to);
     if (siteSearch) {
-      trackMatomoSiteSearch(options, siteSearch);
+      trackMatomoSiteSearch(Matomo, options, siteSearch);
       return;
     }
   }
-  trackMatomoPageView(options, to, from);
+  trackMatomoPageView(Matomo, options, to, from);
 }
 
-function trackMatomoSiteSearch(options: MatomoOptions, { keyword, category, resultsCount }: SiteSearchReturn) {
+function trackMatomoSiteSearch(
+  Matomo: MatomoInstance | undefined,
+  options: MatomoOptions,
+  { keyword, category, resultsCount }: SiteSearchReturn
+) {
   options.debug && console.debug('[vue-matomo] Site Search ' + keyword);
   Matomo?.trackSiteSearch(keyword, category, resultsCount);
 }
 
-function trackMatomoPageView(options: MatomoOptions, to: RouteLocationNormalized, from?: RouteLocationNormalized) {
+function trackMatomoPageView(
+  Matomo: MatomoInstance | undefined,
+  options: MatomoOptions,
+  to: RouteLocationNormalized,
+  from?: RouteLocationNormalized
+) {
   let title: string | undefined;
   let url: string | undefined;
   let referrerUrl: string | undefined;
 
   if (options.router) {
     url = getResolvedHref(options.router, to.fullPath);
-    referrerUrl = from && from.fullPath ? getResolvedHref(options.router, from.fullPath) : undefined;
+    referrerUrl = from?.fullPath ? getResolvedHref(options.router, from.fullPath) : undefined;
 
     if (to.meta.analyticsIgnore) {
       options.debug && console.debug('[vue-matomo] Ignoring ' + url);
       return;
     }
 
-    options.debug && console.debug('[vue-matomo] Tracking ' + url);
     title = (to.meta.title as string | undefined) || url;
   }
 
@@ -69,10 +78,16 @@ function trackMatomoPageView(options: MatomoOptions, to: RouteLocationNormalized
     Matomo?.setCustomUrl(window.location.origin + url);
   }
 
+  options.debug && console.debug('[vue-matomo] Tracking ' + title);
   Matomo?.trackPageView(title);
 }
 
-function initMatomo(Vue: App, options: MatomoOptions) {
+function initMatomo(
+  Vue: App,
+  options: MatomoOptions,
+  MatomoRef: Ref<MatomoInstance | undefined>,
+  Matomo: MatomoInstance | undefined
+) {
   Matomo = getMatomo();
 
   // For Composition API users using the Provide
@@ -83,12 +98,13 @@ function initMatomo(Vue: App, options: MatomoOptions) {
 
   if (options.trackInitialView && options.router) {
     const currentRoute: RouteLocationNormalized = options.router.currentRoute.value;
-    trackUserInteraction(options, currentRoute);
+    trackUserInteraction(Matomo, options, currentRoute);
   }
 
   if (options.router) {
     options.router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
-      trackUserInteraction(options, to, from);
+      trackUserInteraction(Matomo, options, to, from);
+
       if (options.enableLinkTracking) {
         Matomo?.enableLinkTracking();
       }
@@ -116,7 +132,12 @@ function piwikExists(): Promise<void> {
   });
 }
 
-function install(Vue: App, setupOptions: MatomoOptions) {
+function install(
+  Vue: App,
+  setupOptions: MatomoOptions,
+  MatomoRef: Ref<MatomoInstance | undefined>,
+  Matomo: MatomoInstance | undefined
+) {
   const options: MatomoOptions = Object.assign({}, defaultOptions, setupOptions);
 
   const { async, crossOrigin, host, siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
@@ -167,27 +188,36 @@ function install(Vue: App, setupOptions: MatomoOptions) {
   loadScript(Vue, trackerScript, { async, crossOrigin })
     .then(() => piwikExists())
     .then(() => {
-      initMatomo(Vue, options);
+      initMatomo(Vue, options, MatomoRef, Matomo);
       matomoEvents.emit('matomo:loaded');
     })
     .catch((error) => {
+      matomoEvents.emit('matomo:failed');
+
       if (error.target) {
         return console.error(
           `[vue-matomo] An error occurred trying to load ${error.target.src}. ` +
             'If the file exists you may have an ad or tracking blocker enabled.'
         );
       }
+
       console.error(error);
     });
 }
 
 export function createVueMatomo(options: MatomoOptions) {
+  const MatomoRef = ref<MatomoInstance | undefined>();
+  let Matomo: MatomoInstance | undefined;
   return {
-    install: (app: App) => install(app, options),
+    install: (app: App) => install(app, options, MatomoRef, Matomo),
   };
 }
 
-export { matomoKey };
-// Ensuring everything we want bundled is included
-export type { MatomoInstance, MatomoOptions, SiteSearchFunction } from '@/types/index';
+export function useMatomo(): Ref<MatomoInstance | undefined> {
+  const matomo = inject(matomoKey);
+  return matomo as Ref<MatomoInstance | undefined>; // Assert it’s always provided
+}
+
+export const matomoKey: InjectionKey<Ref<MatomoInstance | undefined>> = Symbol('Matomo');
+export type { MatomoOptions, SiteSearchFunction } from '@/types/index';
 export { matomoEvents } from '@/utils';

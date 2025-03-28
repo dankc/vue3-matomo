@@ -1,4 +1,4 @@
-import type { MatomoInstance } from '@/index';
+import type { MatomoInstance } from '@/types/index';
 
 declare global {
   interface Window {

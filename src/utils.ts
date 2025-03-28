@@ -10,6 +10,7 @@ type MatomoEvents = {
 interface EventEmitter {
   listeners: Map<string, Array<(payload: any) => void>>;
   on<Event extends keyof MatomoEvents>(event: Event, callback: (payload: MatomoEvents[Event]) => void): void;
+  off<Event extends keyof MatomoEvents>(event: Event, callback: (payload: MatomoEvents[Event]) => void): void;
   emit<Event extends keyof MatomoEvents>(event: Event, payload?: MatomoEvents[Event]): void;
 }
 
@@ -20,6 +21,12 @@ const eventEmitter: EventEmitter = {
       this.listeners.set(event, []);
     }
     this.listeners.get(event)!.push(callback);
+  },
+  off(event: keyof MatomoEvents, callback: (payload: any) => void) {
+    const callbacks = this.listeners.get(event);
+    if (callbacks) {
+      this.listeners.set(event, callbacks.filter(cb => cb !== callback));
+    }
   },
   emit(event, payload) {
     const callbacks = this.listeners.get(event) || [];
@@ -54,7 +61,7 @@ function loadScript(
     };
     script.onerror = () => {
       eventEmitter.emit('matomo:failed');
-      reject();
+      reject(new Error('[vue-matomo]: Matomo script failed to load.'));
     };
   });
 }
