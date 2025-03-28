@@ -10,7 +10,7 @@ A Vue 3 plugin for Matomo analytics with TypeScript support. This package is a f
 
 ## Features
 - Vue 3 support with TypeScript
-- Access the Matomo instance via `this.$matomo` (Options API) or `inject` (Composition API)
+- Access the Matomo instance via `this.$matomo` (Options API), `useMatomo` (Composition API) , or `inject` (Composition API)
 - Emits events for script loading (`matomo:loaded`, `matomo:failed`)
 - Compatible with `vue-router@4`
 
@@ -162,14 +162,15 @@ export default {
 </script>
 ```
 #### Composition API
-If you're using the Composition API, you can inject the Matomo instance using the `matomoKey`:
+If you're using the Composition API, you can inject the Matomo instance using the `matomoKey` or, for better type support, use `useMatomo`:
 
 ```vue
 <script setup>
 import { inject } from 'vue';
-import { matomoKey } from 'vue3-matomo';
+import { matomoKey, useMatomo } from 'vue3-matomo';
 
-const matomo = inject(matomoKey);
+const matomo = useMatomo(); // or: inject(matomoKey);
+
 const trackClick = () => {
   matomo.value?.trackEvent('Button', 'Click', 'Submit');
 };
@@ -247,10 +248,9 @@ Matomo has a built in way to give and remember consent. The simplest way is to s
 </template>
 
 <script setup lang="ts">
-  import { inject } from 'vue';
-  import { matomoKey } from 'vue3-matomo';
+  import { useMatomo } from 'vue3-matomo';
 
-  const matomo = inject(matomoKey);
+  const matomo = useMatomo();
 
   function handleConsent() {
     matomo.value?.rememberConsentGiven()
