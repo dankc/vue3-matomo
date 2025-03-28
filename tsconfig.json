@@ -22,6 +22,6 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["./src/**/*.ts", "vite.config.ts"],
+  "include": ["./src/**/*.ts", "./src/**/*.d.ts", "vite.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

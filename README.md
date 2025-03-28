@@ -121,7 +121,7 @@ interface MathomoOptions {
   //   etc.
   // ]
   // Default: []
-  preInitActions?: Array<never[]>,
+  preInitActions?: Array<[string, ...any[]]>,
 
   // A function to determine whether to track an interaction as a site search
   // instead of as a page view. If not a function, all interactions will be

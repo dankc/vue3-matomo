@@ -1,12 +1,12 @@
 {
   "name": "vue3-matomo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Vue 3 plugin for Matomo Analytics.",
   "license": "MIT",
   "readme": "./README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dankc/vue-matomo.git"
+    "url": "git+https://github.com/dankc/vue3-matomo.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -14,7 +14,8 @@
   "scripts": {
     "format": "prettier --write src/",
     "type-check": "tsc --noEmit",
-    "build": "npm run type-check && vite build"
+    "build": "npm run type-check && vite build",
+    "pack": "npm run build; npm pack --pack-destination ./pack"
   },
   "type": "module",
   "types": "dist/index.d.ts",
@@ -46,9 +47,9 @@
     "npm": ">= 11.0.0"
   },
   "bugs": {
-    "url": "https://github.com/dankc/vue-matomo/issues"
+    "url": "https://github.com/dankc/vue3-matomo/issues"
   },
-  "homepage": "https://github.com/dankc/vue-matomo#readme",
+  "homepage": "https://github.com/dankc/vue3-matomo#readme",
   "author": {
     "name": "Dan Kiser",
     "email": "dankc@pm.me"
