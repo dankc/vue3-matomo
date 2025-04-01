@@ -1,9 +1,10 @@
-# vue3-matomo
+# Vue3-Matomo
 
 [![vue3](https://img.shields.io/badge/vue-3.x-green.svg)](https://v3.vuejs.org/)
-[![npm](https://img.shields.io/npm/dw/vue3-matomo.svg)](https://www.npmjs.com/package/vue3-matomo)
+[![TypeScript](https://img.shields.io/badge/types-TypeScript-blue.svg)](https://v3.vuejs.org/)
+[![npm](https://img.shields.io/npm/dm/vue3-matomo.svg)](https://www.npmjs.com/package/vue3-matomo)
 [![bundle-size](https://badgen.net/bundlephobia/min/vue3-matomo)](https://bundlephobia.com/result?p=vue3-matomo)
-[![license](https://img.shields.io/github/license/AmazingDreams/vue-matomo)](LICENSE)
+[![license](https://img.shields.io/github/license/dankc/vue3-matomo)](LICENSE)
 
 
 A Vue 3 plugin for Matomo analytics with TypeScript support. This package is a fork of [vue-matomo](https://github.com/AmazingDreams/vue-matomo) by Dennis Ruhe, rewritten in TypeScript to target Vue 3, supports Composition and Options APIs, with event emits for script loading.
@@ -283,10 +284,9 @@ Matomo has a built in way to give and remember consent. The simplest way is to s
 </template>
 
 <script setup lang="ts">
-  import { inject } from 'vue';
-  import { matomoKey } from 'vue3-matomo';
+  import { useMatomo } from 'vue3-matomo';
 
-  const matomo = inject(matomoKey);
+  const matomo = useMatomo();
 
   function handleConsent() {
     matomo.value?.rememberCookieConsentGiven()

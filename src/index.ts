@@ -219,5 +219,5 @@ export function useMatomo(): Ref<MatomoInstance | undefined> {
 }
 
 export const matomoKey: InjectionKey<Ref<MatomoInstance | undefined>> = Symbol('Matomo');
-export type { MatomoOptions, SiteSearchFunction } from '@/types/index';
+export type { MatomoOptions, SiteSearchFunction, MatomoInstance } from '@/types/index';
 export { matomoEvents } from '@/utils';
