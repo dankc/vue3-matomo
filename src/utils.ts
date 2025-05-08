@@ -44,8 +44,6 @@ function loadScript(
   { async, crossOrigin }: { async?: boolean; crossOrigin?: 'anonymous' | 'use-credentials' }
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    if( !isClient() ) reject();
-
     const script = document.createElement('script');
     script.async = async || false;
     script.defer = async || false;
