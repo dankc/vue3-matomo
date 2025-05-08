@@ -1,16 +1,17 @@
 # Vue3-Matomo
 
-[![vue3](https://img.shields.io/badge/vue-3.x-green.svg)](https://v3.vuejs.org/)
+[![vue 3](https://img.shields.io/badge/vue-3.x-green.svg)](https://v3.vuejs.org/)
+[![nuxt 3](https://img.shields.io/badge/nuxt-3.x-green.svg)](https://nuxt.com/)
 [![TypeScript](https://img.shields.io/badge/types-TypeScript-blue.svg)](https://v3.vuejs.org/)
 [![npm](https://img.shields.io/npm/dm/vue3-matomo.svg)](https://www.npmjs.com/package/vue3-matomo)
 [![bundle-size](https://badgen.net/bundlephobia/min/vue3-matomo)](https://bundlephobia.com/result?p=vue3-matomo)
 [![license](https://img.shields.io/github/license/dankc/vue3-matomo)](LICENSE)
 
 
-A Vue 3 plugin for Matomo analytics with TypeScript support. This package is a fork of [vue-matomo](https://github.com/AmazingDreams/vue-matomo) by Dennis Ruhe, rewritten in TypeScript to target Vue 3, supports Composition and Options APIs, with event emits for script loading.
+A Vue 3 plugin for Matomo analytics with TypeScript support. This package is a fork of [vue-matomo](https://github.com/AmazingDreams/vue-matomo) by Dennis Ruhe, rewritten in TypeScript to target Vue 3, supports Composition and Options APIs, with event emits for script loading. This plugin can also be used in Nuxt 3.
 
 ## Features
-- Vue 3 support with TypeScript
+- Vue 3 and Nuxt 3 support with TypeScript
 - Access the Matomo instance via `this.$matomo` (Options API), `useMatomo` (Composition API) , or `inject` (Composition API)
 - Emits events for script loading (`matomo:loaded`, `matomo:failed`)
 - Compatible with `vue-router@4`
@@ -21,7 +22,10 @@ npm install vue3-matomo
 ```
 
 ## Usage
+
 ### Basic Setup
+
+#### Vue
 ```ts
 import { createApp } from 'vue';
 import App from './App.vue';
@@ -38,6 +42,25 @@ app.use(createVueMatomo({
 }));
 
 app.mount('#app');
+```
+
+#### Nuxt
+This plugin also works with Nuxt 3 and the API is exactly the same as it is for Vue. Be sure to use the `.client` suffix in your file name to prevent it from running server-side.
+```ts
+// ./plugins/matomo.client.ts
+import { createVueMatomo } from 'vue3-matomo';
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const router = useRouter(); // Access the router with this composable and provide it to your options object if you want automatic page tracking
+
+  nuxtApp.vueApp.use(
+    createVueMatomo({
+      router,
+      // ...The rest of your options
+    })
+  );
+});
+
 ```
 
 ### Options
@@ -182,10 +205,10 @@ const trackClick = () => {
 You can listen for `matomo:loaded` and `matomo:failed` events in components and composables:
 
 ```ts
-// useMatomo.ts
+// useMatomoEvents.ts
 import { matomoEvents } from 'vue3-matomo';
 
-export function useMatomo() {
+export function useMatomoEvents() {
   const onLoad = () => {
     matomoEvents.on('matomo:loaded', () => {
       console.log('Matomo loaded from composable');
