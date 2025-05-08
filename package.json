@@ -1,7 +1,7 @@
 {
   "name": "vue3-matomo",
-  "version": "1.1.2",
-  "description": "A Vue 3 plugin for Matomo Analytics.",
+  "version": "1.2.0",
+  "description": "A Vue 3 and Nuxt 3 plugin for Matomo Analytics.",
   "license": "MIT",
   "readme": "./README.md",
   "repository": {
@@ -11,6 +11,12 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
+  "keywords": [
+    "vue",
+    "nuxt",
+    "matomo",
+    "analytics"
+  ],
   "scripts": {
     "format": "prettier --write src/",
     "type-check": "tsc --noEmit",

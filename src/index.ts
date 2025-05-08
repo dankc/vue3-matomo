@@ -1,7 +1,7 @@
 import { inject, ref, type App, type InjectionKey, type Ref } from 'vue';
 import type { RouteLocationNormalized } from 'vue-router';
 import type { MatomoDefaults, MatomoOptions, MatomoInstance, SiteSearchReturn } from '@/types/index';
-import { getMatomo, getResolvedHref, loadScript, matomoEvents } from '@/utils';
+import { isClient, getMatomo, getResolvedHref, loadScript, matomoEvents } from '@/utils';
 
 const defaultOptions: MatomoDefaults = {
   async: true,
@@ -138,6 +138,7 @@ function install(
   MatomoRef: Ref<MatomoInstance | undefined>,
   Matomo: MatomoInstance | undefined
 ) {
+  if( !isClient() ) return;
   const options: MatomoOptions = Object.assign({}, defaultOptions, setupOptions);
 
   const { async, crossOrigin, host, siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
@@ -185,7 +186,7 @@ function install(
 
   options.preInitActions?.forEach((action) => window._paq?.push(action));
 
-  loadScript(Vue, trackerScript, { async, crossOrigin })
+  loadScript(trackerScript, { async, crossOrigin })
     .then(() => piwikExists())
     .then(() => {
       initMatomo(Vue, options, MatomoRef, Matomo);
@@ -214,10 +215,11 @@ export function createVueMatomo(options: MatomoOptions) {
 }
 
 export function useMatomo(): Ref<MatomoInstance | undefined> {
+  if( !isClient() ) return ref();
   const matomo = inject(matomoKey);
   return matomo as Ref<MatomoInstance | undefined>; // Assert it’s always provided
 }
 
 export const matomoKey: InjectionKey<Ref<MatomoInstance | undefined>> = Symbol('Matomo');
 export type { MatomoOptions, SiteSearchFunction, MatomoInstance } from '@/types/index';
-export { matomoEvents } from '@/utils';
+export { matomoEvents, isClient } from '@/utils';

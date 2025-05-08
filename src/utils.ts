@@ -1,4 +1,3 @@
-import type { App } from 'vue';
 import type { Router } from 'vue-router';
 import type { MatomoInstance } from '@/types/index';
 
@@ -34,12 +33,13 @@ const eventEmitter: EventEmitter = {
   },
 };
 
+const isClient = (): boolean => typeof window !== 'undefined';
+
 function getMatomo(): MatomoInstance | undefined {
   return window.Piwik?.getAsyncTracker();
 }
 
 function loadScript(
-  app: App,
   trackerScript: string,
   { async, crossOrigin }: { async?: boolean; crossOrigin?: 'anonymous' | 'use-credentials' }
 ): Promise<void> {
@@ -70,4 +70,4 @@ function getResolvedHref(router: Router, path: string): string {
   return router.resolve(path).href;
 }
 
-export { getMatomo, loadScript, getResolvedHref, eventEmitter as matomoEvents };
+export { isClient, getMatomo, loadScript, getResolvedHref, eventEmitter as matomoEvents };
