@@ -23,7 +23,8 @@
     "type-check:spec": "tsc --project tsconfig.spec.json --noEmit",
     "build": "npm run type-check:src && vite build",
     "pack": "npm run build; npm pack --pack-destination ./pack",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepare": "husky"
   },
   "type": "module",
   "types": "dist/index.d.ts",
@@ -43,6 +44,7 @@
     "@types/node": "^22.13.13",
     "@vitejs/plugin-vue": "^5.2.3",
     "happy-dom": "^17.4.7",
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "rollup-plugin-dts": "^6.2.1",
     "typescript": "^5.8.2",
