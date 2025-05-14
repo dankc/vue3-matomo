@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { resolve } from 'path';
 import { rm } from 'fs/promises';
 import { defineConfig } from 'vite';
@@ -64,4 +65,14 @@ export default defineConfig({
       },
     },
   ].filter(Boolean),
+  test: {
+    environment: 'node',
+    typecheck: {
+      checker: 'tsc',
+      enabled: true,
+      tsconfig: './tsconfig.spec.json',
+    },
+    include: ['spec/*.spec.ts'],
+    exclude: ['node_modules', 'dist', 'src'],
+  },
 });
