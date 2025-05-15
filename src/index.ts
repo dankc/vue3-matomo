@@ -1,28 +1,7 @@
 import { inject, ref, type App, type InjectionKey, type Ref } from 'vue';
 import type { RouteLocationNormalized } from 'vue-router';
-import type { MatomoDefaults, MatomoOptions, MatomoInstance, SiteSearchReturn } from '@/types/index';
-import { isClient, getMatomo, getResolvedHref, loadScript, matomoEvents } from '@/utils';
-
-const defaultOptions: MatomoDefaults = {
-  async: true,
-  debug: false,
-  disableCookies: false,
-  requireCookieConsent: false,
-  enableHeartBeatTimer: false,
-  enableLinkTracking: true,
-  heartBeatTimerInterval: 15,
-  requireConsent: false,
-  trackInitialView: true,
-  trackerFileName: 'matomo',
-  trackerUrl: undefined,
-  trackerScriptUrl: undefined,
-  userId: undefined,
-  cookieDomain: undefined,
-  domains: undefined,
-  preInitActions: [],
-  trackSiteSearch: undefined,
-  crossOrigin: undefined,
-};
+import type { MatomoOptions, MatomoInstance, SiteSearchReturn } from '@/types';
+import { defaultOptions, isClient, getMatomo, getResolvedHref, loadScript, matomoEvents } from '@/utils';
 
 function trackUserInteraction(
   Matomo: MatomoInstance | undefined,
@@ -138,7 +117,7 @@ function install(
   MatomoRef: Ref<MatomoInstance | undefined>,
   Matomo: MatomoInstance | undefined
 ) {
-  if( !isClient() ) return;
+  if (!isClient()) return;
   const options: MatomoOptions = Object.assign({}, defaultOptions, setupOptions);
 
   const { async, crossOrigin, host, siteId, trackerFileName, trackerUrl, trackerScriptUrl } = options;
@@ -185,8 +164,7 @@ function install(
   }
 
   options.preInitActions?.forEach((action) => window._paq?.push(action));
-
-  loadScript(trackerScript, { async, crossOrigin })
+  return loadScript(trackerScript, { async, crossOrigin })
     .then(() => piwikExists())
     .then(() => {
       initMatomo(Vue, options, MatomoRef, Matomo);
@@ -215,7 +193,7 @@ export function createVueMatomo(options: MatomoOptions) {
 }
 
 export function useMatomo(): Ref<MatomoInstance | undefined> {
-  if( !isClient() ) return ref();
+  if (!isClient()) return ref();
   const matomo = inject(matomoKey);
   return matomo as Ref<MatomoInstance | undefined>; // Assert it’s always provided
 }
