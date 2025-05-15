@@ -4,7 +4,6 @@ declare global {
   interface Window {
     Piwik?: {
       getAsyncTracker: () => MatomoInstance;
-      // Add other methods as needed
     };
     _paq: any[];
   }
