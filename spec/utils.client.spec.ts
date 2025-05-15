@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { defaultOptions, isClient, matomoEvents, createScript } from '@/utils';
 
 describe('Utils suite client-side', () => {
@@ -9,13 +9,18 @@ describe('Utils suite client-side', () => {
   });
 
   describe('matomoEvents emits events', () => {
-    it('Emits matomo:failed', ({ expect }) => {
-      matomoEvents.on('matomo:failed', () => expect(true));
+    const dummyFunction = vi.fn(() => 0);
+    it('Emits matomo:failed', () => {
+      matomoEvents.on('matomo:failed', () => dummyFunction());
       matomoEvents.emit('matomo:failed');
+      expect(dummyFunction).toHaveBeenCalled();
+      dummyFunction.mockReset();
     });
-    it('Emits matomo:loaded', ({ expect }) => {
-      matomoEvents.on('matomo:loaded', () => expect(true));
+    it('Emits matomo:loaded', () => {
+      matomoEvents.on('matomo:loaded', () => dummyFunction());
       matomoEvents.emit('matomo:loaded');
+      expect(dummyFunction).toHaveBeenCalled();
+      dummyFunction.mockReset();
     });
   });
 
