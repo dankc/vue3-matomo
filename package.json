@@ -56,7 +56,7 @@
   },
   "engines": {
     "node": ">= 20.0.0",
-    "npm": ">= 11.0.0"
+    "npm": ">= 10.0.0"
   },
   "bugs": {
     "url": "https://github.com/dankc/vue3-matomo/issues"
