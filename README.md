@@ -2,16 +2,17 @@
 
 [![vue 3](https://img.shields.io/badge/vue-3.x-green.svg)](https://v3.vuejs.org/)
 [![nuxt 3](https://img.shields.io/badge/nuxt-3.x-green.svg)](https://nuxt.com/)
+[![nuxt 4](https://img.shields.io/badge/nuxt-4.x-green.svg)](https://nuxt.com/)
 [![TypeScript](https://img.shields.io/badge/types-TypeScript-blue.svg)](https://v3.vuejs.org/)
 [![npm](https://img.shields.io/npm/dm/vue3-matomo.svg)](https://www.npmjs.com/package/vue3-matomo)
 [![bundle-size](https://badgen.net/bundlephobia/min/vue3-matomo)](https://bundlephobia.com/result?p=vue3-matomo)
 [![license](https://img.shields.io/github/license/dankc/vue3-matomo)](LICENSE)
 
 
-A Vue 3 plugin for Matomo analytics with TypeScript support. This package is a fork of [vue-matomo](https://github.com/AmazingDreams/vue-matomo) by Dennis Ruhe, rewritten in TypeScript to target Vue 3, supports Composition and Options APIs, with event emits for script loading. This plugin can also be used in Nuxt 3.
+A Vue 3 plugin for Matomo analytics with TypeScript support. This package is a fork of [vue-matomo](https://github.com/AmazingDreams/vue-matomo) by Dennis Ruhe, rewritten in TypeScript to target Vue 3, supports Composition and Options APIs, with event emits for script loading. This plugin can also be used in Nuxt 3+.
 
 ## Features
-- Vue 3 and Nuxt 3 support with TypeScript
+- Vue 3 and Nuxt 3+ support with TypeScript
 - Access the Matomo instance via `this.$matomo` (Options API), `useMatomo` (Composition API) , or `inject` (Composition API)
 - Emits events for script loading (`matomo:loaded`, `matomo:failed`)
 - Compatible with `vue-router@4`
@@ -45,7 +46,7 @@ app.mount('#app');
 ```
 
 #### Nuxt
-This plugin also works with Nuxt 3 and the API is exactly the same as it is for Vue. Be sure to use the `.client` suffix in your file name to prevent it from running server-side.
+This plugin also works with Nuxt 3+ and the API is exactly the same as it is for Vue. Be sure to use the `.client` suffix in your file name to prevent it from running server-side.
 ```ts
 // ./plugins/matomo.client.ts
 import { createVueMatomo } from 'vue3-matomo';
