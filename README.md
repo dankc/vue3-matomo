@@ -15,7 +15,7 @@ A Vue 3 plugin for Matomo analytics with TypeScript support. This package is a f
 - Vue 3 and Nuxt 3+ support with TypeScript
 - Access the Matomo instance via `this.$matomo` (Options API), `useMatomo` (Composition API) , or `inject` (Composition API)
 - Emits events for script loading (`matomo:loaded`, `matomo:failed`)
-- Compatible with `vue-router@4`
+- Compatible with `vue-router@4` and `vue-router@5`
 
 ## Installation
 ```bash
