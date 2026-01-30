@@ -1,6 +1,6 @@
 {
   "name": "vue3-matomo",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A Vue 3 and Nuxt 3 plugin for Matomo Analytics.",
   "license": "MIT",
   "readme": "./README.md",
@@ -38,25 +38,21 @@
   ],
   "peerDependencies": {
     "vue": "^3.0.0",
-    "vue-router": "^4.0.0"
+    "vue-router": ">=4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.13.13",
-    "@vitejs/plugin-vue": "^5.2.3",
+    "@types/node": "^24.10.9",
+    "@vitejs/plugin-vue": "^6.0.3",
     "happy-dom": "^20.0.11",
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "rollup-plugin-dts": "^6.2.1",
     "typescript": "^5.8.2",
-    "vite": "^6.2.3",
+    "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.3",
-    "vitest": "4.0.15",
+    "vitest": "4.0.18",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
-  },
-  "engines": {
-    "node": ">= 20.0.0",
-    "npm": ">= 10.0.0"
+    "vue-router": "^5.0.0"
   },
   "bugs": {
     "url": "https://github.com/dankc/vue3-matomo/issues"
