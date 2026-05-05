@@ -1,4 +1,4 @@
-import { inject, ref, type App, type InjectionKey, type Ref } from 'vue';
+import { inject, ref, toRef, type App, type InjectionKey, type Ref } from 'vue';
 import type { RouteLocationNormalized } from 'vue-router';
 import type { MatomoOptions, MatomoInstance, SiteSearchReturn } from '@/types';
 import { defaultOptions, isClient, getMatomo, getResolvedHref, loadScript, matomoEvents } from '@/utils';
@@ -194,8 +194,8 @@ export function createVueMatomo(options: MatomoOptions) {
 
 export function useMatomo(): Ref<MatomoInstance | undefined> {
   if (!isClient()) return ref();
-  const matomo = inject(matomoKey);
-  return matomo as Ref<MatomoInstance | undefined>; // Assert it’s always provided
+  const matomo = toRef(inject(matomoKey));
+  return matomo;
 }
 
 export const matomoKey: InjectionKey<Ref<MatomoInstance | undefined>> = Symbol('Matomo');
