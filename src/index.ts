@@ -194,7 +194,7 @@ export function createVueMatomo(options: MatomoOptions) {
 
 export function useMatomo(): Ref<MatomoInstance | undefined> {
   if (!isClient()) return ref();
-  return toRef(inject(matomoKey));
+  return toRef(inject(matomoKey, undefined));
 }
 
 export const matomoKey: InjectionKey<Ref<MatomoInstance | undefined>> = Symbol('Matomo');
