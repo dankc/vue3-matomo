@@ -1,6 +1,6 @@
 {
   "name": "vue3-matomo",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "A Vue 3 and Nuxt 3 plugin for Matomo Analytics.",
   "license": "MIT",
   "readme": "./README.md",
@@ -26,7 +26,6 @@
     "test": "vitest run",
     "prepare": "husky"
   },
-  "type": "module",
   "types": "dist/index.d.ts",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
@@ -48,9 +47,9 @@
     "prettier": "^3.5.3",
     "rollup-plugin-dts": "^6.2.1",
     "typescript": "^5.8.2",
-    "vite": "^7.3.1",
-    "vite-plugin-dts": "^4.5.3",
-    "vitest": "4.0.18",
+    "vite": "^8.0.10",
+    "vite-plugin-dts": "^5.0.0",
+    "vitest": "4.1.5",
     "vue": "^3.5.13",
     "vue-router": "^5.0.0"
   },
