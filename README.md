@@ -5,7 +5,6 @@
 [![nuxt 4](https://img.shields.io/badge/nuxt-4.x-green.svg)](https://nuxt.com/)
 [![TypeScript](https://img.shields.io/badge/types-TypeScript-blue.svg)](https://v3.vuejs.org/)
 [![npm](https://img.shields.io/npm/dm/vue3-matomo.svg)](https://www.npmjs.com/package/vue3-matomo)
-[![bundle-size](https://badgen.net/bundlephobia/min/vue3-matomo)](https://bundlephobia.com/result?p=vue3-matomo)
 [![license](https://img.shields.io/github/license/dankc/vue3-matomo)](LICENSE)
 
 
