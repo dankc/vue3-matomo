@@ -1,6 +1,6 @@
 {
   "name": "vue3-matomo",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "A Vue 3 and Nuxt 3 plugin for Matomo Analytics.",
   "license": "MIT",
   "readme": "./README.md",
